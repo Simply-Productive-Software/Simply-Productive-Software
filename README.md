@@ -12,12 +12,12 @@ A catalog of Claude plugins from Simply Productive Software. Each plugin is a se
 
 ## Add this marketplace
 
-**Claude on the web or desktop app:** open Customize, then Plugins, then Add, then Add marketplace, and enter `Simply-Productive-Software/skills-marketplace`. If the repo is private, connect GitHub when asked and give the Claude GitHub App access to this repo.
+**Claude on the web or desktop app:** open Customize, then Plugins, then Add, then Add marketplace, and enter `Simply-Productive-Software/simply-productive-software`. If the repo is private, connect GitHub when asked and give the Claude GitHub App access to this repo.
 
 **Claude Code:**
 
 ```
-/plugin marketplace add Simply-Productive-Software/skills-marketplace
+/plugin marketplace add Simply-Productive-Software/simply-productive-software
 /plugin install job-search-system@simply-productive-software
 ```
 
