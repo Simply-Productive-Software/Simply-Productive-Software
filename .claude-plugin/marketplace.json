@@ -7,7 +7,7 @@
     {
       "name": "job-search-system",
       "source": "./plugins/job-search-system",
-      "description": "Builds a job-search profile, tailors a resume and cover letter to a job you give it, reviews the draft, and tracks applications in your Google Drive. It never submits anything."
+      "description": "Builds your career profile, drafts a tailored resume and cover letter for a job you choose, checks the draft against your confirmed facts, and logs your applications. Requires the Google Drive and Google Sheets connectors. You edit and submit; it never submits anything. AI output can be wrong, so check everything, and use it at your own risk."
     }
   ]
 }
