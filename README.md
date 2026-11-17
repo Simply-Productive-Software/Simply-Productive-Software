@@ -18,7 +18,7 @@ A catalog of Claude plugins from Simply Productive Software. Each plugin is a se
 
 ```
 /plugin marketplace add Simply-Productive-Software/skills-marketplace
-/plugin install job-search-system@skills-marketplace
+/plugin install job-search-system@simply-productive-software
 ```
 
 ## Data
