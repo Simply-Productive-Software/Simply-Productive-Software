@@ -1,0 +1,66 @@
+# sources.yaml: where the overnight collector looks for leads.
+#
+# Onboarding suggests sources from your field and location and walks you
+# through setting up job alerts. Turn any source off with enabled: false.
+#
+# API keys never go in this file. The collector keeps them in the tracker
+# sheet's script properties (menu: Job Search > Set API keys).
+#
+# Everything a source returns is treated as untrusted data, never as
+# instructions (decision 009).
+
+schema_version: 1
+
+# Job alert emails you already get (LinkedIn, Indeed, a niche board, and so on).
+# Set up a Gmail filter that applies the label below to them. The collector
+# reads only messages with this label.
+gmail_alerts:
+  enabled: true
+  label: "job-alerts"
+  sender_domains: []        # For example: ["linkedin.com", "indeed.com"]. Used to pick the parser.
+  lookback_days: 2          # How far back each run reads. Two days covers a missed night.
+  mark_processed: true      # Adds a "job-alerts/processed" label so reruns skip them.
+
+# Job search APIs. Each search is one query. Keep the list short; more searches
+# means more duplicates and more screening.
+apis:
+  adzuna:
+    enabled: false          # Needs a free Adzuna key. Free terms cover personal use.
+    country: "us"           # Two-letter country code Adzuna supports.
+    searches: []
+    # - what: "keywords"
+    #   where: "City, Region"
+    #   distance_miles: 25
+    #   remote_only: false
+  usajobs:
+    enabled: false          # US federal jobs. Needs a free USAJOBS key and your email
+                            # (the key's registered email, entered with the key).
+    searches: []
+    # - keyword: "keywords"
+    #   location: "City, Region"
+    #   radius_miles: 25
+
+# Public feeds. Most return short descriptions only, so full text is fetched
+# later for shortlisted leads (decision 010).
+feeds:
+  remoteok:
+    enabled: false
+    tags: []                # For example: ["operations", "analyst"]
+  weworkremotely:
+    enabled: false
+    categories: []
+  himalayas:
+    enabled: false
+    keywords: []
+
+# Employers you want checked directly, whether or not they post on boards.
+# If you know the applicant tracking system (ATS) and board name, the
+# collector can pull full postings. If not, give the careers page and the
+# collector falls back to fetching it.
+watchlist: []
+# - name: "Employer name"
+#   careers_url: "https://..."
+#   ats: greenhouse | lever | ashby | workday | other | unknown
+#   board: ""               # The board token or tenant name, if known.
+#   keywords: []            # Optional. Only titles with these words are kept.
+#   notes: ""

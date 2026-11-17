@@ -1,0 +1,6 @@
+{
+  "name": "job-search-system",
+  "version": "0.1.0",
+  "description": "Finds job leads, scores them against your own wants, and drafts a reviewed resume and cover letter for the best ones. You decide, edit and submit. It never submits anything.",
+  "keywords": ["job search", "resume", "cover letter", "tracker"]
+}

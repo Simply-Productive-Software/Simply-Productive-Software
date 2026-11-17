@@ -1,0 +1,18 @@
+# Phrases that point at age. A draft containing one is blocked (decision 015).
+# One per line. Matched as whole words, case-insensitive, punctuation ignored.
+# Lines starting with # are comments.
+decades of
+decades long
+seasoned veteran
+seasoned professional
+digital native
+old school
+young and energetic
+youthful
+baby boomer
+gen x
+gen z
+millennial
+recent college graduate
+fresh out of college
+set in my ways

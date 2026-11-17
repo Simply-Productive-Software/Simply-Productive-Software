@@ -1,0 +1,30 @@
+# skills-marketplace
+
+A catalog of Claude plugins from Simply Productive Software. Each plugin is a set of skills you add to Claude. This repo is the catalog and the plugin files; nothing runs from here.
+
+**Status: early testing.** The plugins are not ready for general use, and the layout may change.
+
+## Plugins
+
+| Plugin | What it does |
+| --- | --- |
+| `job-search-system` | Builds a job-search profile, tailors a resume and cover letter to a job you give it, reviews the draft, and tracks applications in your Google Drive. Nothing in it submits applications, sends email or fills in forms. You do that yourself. |
+
+## Add this marketplace
+
+**Claude on the web or desktop app:** open Customize, then Plugins, then Add, then Add marketplace, and enter `Simply-Productive-Software/skills-marketplace`. If the repo is private, connect GitHub when asked and give the Claude GitHub App access to this repo.
+
+**Claude Code:**
+
+```
+/plugin marketplace add Simply-Productive-Software/skills-marketplace
+/plugin install job-search-system@skills-marketplace
+```
+
+## Data
+
+The job-search-system plugin works with your own Google Drive through connectors you authorize in Claude. It creates folders and files there for your profile, drafts and tracker. This repo holds no personal data. Skills in this marketplace are not reviewed by Anthropic when you add them from a repo, so read what you install.
+
+## Contact
+
+simplyproductivesoftware.com

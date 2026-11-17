@@ -1,0 +1,13 @@
+{
+  "name": "skills-marketplace",
+  "owner": {
+    "name": "Simply Productive Software"
+  },
+  "plugins": [
+    {
+      "name": "job-search-system",
+      "source": "./plugins/job-search-system",
+      "description": "Builds a job-search profile, tailors a resume and cover letter to a job you give it, reviews the draft, and tracks applications in your Google Drive. It never submits anything."
+    }
+  ]
+}

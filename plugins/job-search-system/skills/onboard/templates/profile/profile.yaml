@@ -1,0 +1,63 @@
+# profile.yaml: who you are and where you stand in your search.
+#
+# Onboarding fills this in. Edit it any time; the next run picks up changes.
+# Contact details here go on every resume and cover letter, and the code
+# checks compare drafts against them, so keep them exact.
+#
+# There is no age or date-of-birth field, and the system never asks for one
+# (decision 015). The situation fields below are what the system uses instead.
+
+schema_version: 1
+
+contact:
+  full_name: ""            # As it should appear on a resume.
+  preferred_name: ""       # What you go by, for cover letter sign-offs. Optional.
+  email: ""
+  phone: ""                # Format it the way you want it printed.
+  city: ""
+  region: ""               # State, province or county.
+  country: ""
+  timezone: ""             # IANA name, for example America/Chicago. Used for run times.
+  links:                   # Optional. Remove any you do not want on drafts.
+    linkedin: ""
+    portfolio: ""
+    other: ""
+  show_on_resume:          # Which contact lines appear on drafts.
+    email: true
+    phone: true
+    city_region: true      # City and region only. A street address is never used.
+    links: [linkedin]
+
+# Which set of skill categories the Skills section of facts.md uses
+# (decision 023). "tech" for software, data and infrastructure work;
+# "general" for most other work. The presets are in
+# shared/skill-categories.yaml. Onboarding sets this in step 3.
+skills_preset: ""
+
+# Situation fields (decision 015). These tune drafting and turn on optional
+# modules. None of them filters you out of anything.
+situation:
+  years_experience: 0      # Total working years that count toward the roles you want.
+  recent_level: ""         # Your most recent level in plain words, for example
+                           # "individual contributor", "senior specialist", "team lead",
+                           # "manager of managers".
+  target_levels: []        # Levels you are aiming for. Can include more than one.
+  open_to_lower_level: false   # true if you would take a role below your recent level.
+                               # Drafts then explain the move honestly instead of hiding it.
+  career_change:
+    is_career_change: false
+    from: ""               # Field or function you are moving from.
+    to: ""                 # Field or function you are moving toward.
+  gap:
+    has_gap: false         # A gap of 6 months or more in the last 10 years.
+    start: ""              # YYYY-MM
+    end: ""                # YYYY-MM, or "present"
+    explanation: ""        # One or two sentences you are comfortable seeing in a cover
+                           # letter or answer. You decide how much to say. Leave blank
+                           # and drafts will not mention it.
+
+# Optional modules. "auto" lets the situation fields decide (rules are in
+# settings.yaml under modules). "on" or "off" overrides that.
+modules:
+  experienced_candidate: auto   # Trims long histories, explains a lower-level move,
+                                # shows current skills.

@@ -1,0 +1,86 @@
+# settings.yaml: how much the system does each night and with which models.
+#
+# The values below are the defaults for a Claude Pro plan (decision 012).
+# Every value can be changed. If you delete a key, the system uses the
+# default shown in this template. Onboarding asks which plan you have and
+# fills this in; the "settings" skill changes it for you if you would rather
+# not edit YAML.
+#
+# The Pro defaults are a starting point, not a measurement. Anthropic does
+# not publish per-plan limits for scheduled tasks, so the build step 7 dry
+# run measures real usage and these defaults will change to match.
+
+schema_version: 1
+
+plan: pro                     # pro | max. Informational; it does not change other values.
+                              # See "Suggested values for a Max plan" at the bottom.
+
+# Where your things live. Onboarding fills these in.
+locations:
+  system_folder_url: ""       # The folder that holds everything for this setup.
+  tracker_sheet_url: ""
+  output_folder_url: ""       # The Applications folder inside it, for the dated application folders.
+
+# When things run, in your profile.yaml timezone.
+schedule:
+  collector_time: "01:00"     # Stage one: the Apps Script collects and screens.
+  nightly_time: "03:00"       # Stage two: the scheduled Claude task drafts and reviews.
+                              # 3 a.m. lets the plan's 5-hour usage window reset
+                              # before your day starts.
+  nightly_enabled: false      # Onboarding step 9 sets this to true once the nightly task exists.
+                              # When true, the collector reports a night the task did not run.
+
+# Stage one: collect and screen on snippets.
+screening:
+  screener_model: claude-haiku-5-5   # Used only if you added an Anthropic API key.
+  screener_price_usd_per_mtok:       # Optional. Fill in from Anthropic's pricing page so
+    input: null                      # the Run Log can show what screening cost. Left empty,
+    output: null                     # the Run Log records tokens only.
+  pass_without_api_key: 30           # With no key, rules rank leads and this many go on.
+  shortlist_min_screen_score: 7      # Out of 12. Leads at or above this get their
+                                     # full posting fetched in stage two.
+  shortlist_max: 5                   # Most leads fetched in full per night.
+
+# Stage two: full posting, rescore, draft.
+drafting:
+  draft_cap: 2                       # Most drafts per night.
+  score_bar: 9                       # Out of 12, scored on the full posting. Leads
+                                     # below this are not drafted.
+  drafter_model: claude-sonnet-5-5
+  fix_rounds: 1                      # Automatic fix rounds after review before a draft
+                                     # goes to "Needs you".
+
+# Review (decision 007). The blocking checks are not settings: they always
+# run and always block. You can change the model and the notes.
+review:
+  reviewer_model: claude-sonnet-5-5  # A stronger reviewer, such as claude-opus-5-5,
+                                     # uses more plan room.
+  recruiter_read_notes: true         # Non-blocking notes from a skeptical recruiter read.
+
+# What gets saved for each drafted lead.
+output:
+  formats: [google_doc, pdf]         # Any of: google_doc, pdf, docx, markdown.
+  folder_name: "{date} {employer} - {title}"   # {date} is YYYY-MM-DD.
+  resume_file_name: "{full_name} Resume - {employer}"
+  cover_letter_file_name: "{full_name} Cover Letter - {employer}"
+  save_posting: true                 # Saves posting.md in the folder (decision 010).
+
+# Rules for "auto" modules in profile.yaml.
+modules:
+  experienced_candidate:
+    min_years_experience: 15         # Turns on at this many years or more.
+    on_when_open_to_lower_level: true
+    on_when_gap: true
+
+# Testing. Leave this off in a real tracker.
+testing:
+  allow_reset: false                 # true adds a working "Testing > Reset tracker data" menu
+                                     # item that deletes every row in Leads, Applications, Run
+                                     # Log and Seen after you type RESET. For test sheets only.
+
+# Suggested values for a Max plan (not applied automatically):
+#   drafting.draft_cap: 4
+#   drafting.drafter_model: claude-opus-5-5
+#   screening.shortlist_max: 8
+# These are unmeasured starting points. Raise them a step at a time and
+# watch whether your daytime usage suffers.

@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "posting-extract.json",
+  "title": "Posting extract",
+  "description": "Fixed-shape summary of one job posting, made from untrusted text in a step that does nothing else (decisions 009 and 017). Scoring and drafting work from this, not from the raw text. Strings are short on purpose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_url",
+    "captured",
+    "full_text",
+    "is_open",
+    "title",
+    "employer",
+    "location",
+    "work_mode",
+    "pay",
+    "employment_type",
+    "requirements",
+    "responsibilities",
+    "ai_directed_text"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "lead_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^L-[0-9]{8}-[0-9]{3,}$"
+    },
+    "source_url": {
+      "type": "string",
+      "pattern": "^(https://\\S+|pasted)$",
+      "description": "Where the text came from, or pasted when the user pasted it with no link."
+    },
+    "captured": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "posted": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "Date the posting was published, if it says. Null if not given."
+    },
+    "full_text": {
+      "type": "boolean",
+      "description": "true only if the whole posting was captured: duties and requirements, not an alert snippet or a truncated feed description."
+    },
+    "is_open": {
+      "enum": [
+        "open",
+        "closed",
+        "unknown"
+      ],
+      "description": "From the page itself when captured: an apply button or no closed notice means open."
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "employer": {
+      "type": "string",
+      "maxLength": 150
+    },
+    "location": {
+      "type": "string",
+      "maxLength": 150
+    },
+    "work_mode": {
+      "enum": [
+        "remote",
+        "hybrid",
+        "onsite",
+        "unknown"
+      ]
+    },
+    "on_site_days_per_week": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 7
+    },
+    "remote_restrictions": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200,
+      "description": "Countries, states or time zones a remote role is limited to."
+    },
+    "pay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "period",
+        "min",
+        "max",
+        "currency",
+        "yearly_top"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "As listed. Empty if not listed."
+        },
+        "period": {
+          "enum": [
+            "year",
+            "month",
+            "hour",
+            "unknown"
+          ]
+        },
+        "min": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "max": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "currency": {
+          "type": "string",
+          "maxLength": 3
+        },
+        "yearly_top": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Top of range as a yearly figure: hourly x 2080, monthly x 12."
+        }
+      }
+    },
+    "employment_type": {
+      "enum": [
+        "full_time",
+        "part_time",
+        "contract",
+        "temporary",
+        "unknown"
+      ]
+    },
+    "contract_months": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "schedule": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    },
+    "on_call": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    },
+    "travel": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 200
+    },
+    "level": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 100,
+      "description": "As stated or clearly implied, in plain words."
+    },
+    "manages_people": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "direct_reports": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "requirements": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "text",
+          "required",
+          "kind",
+          "has_equivalent_option"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "required": {
+            "type": "boolean",
+            "description": "false for preferred or nice-to-have items."
+          },
+          "kind": {
+            "enum": [
+              "experience",
+              "education",
+              "license",
+              "certification",
+              "skill",
+              "tool",
+              "clearance",
+              "other"
+            ]
+          },
+          "has_equivalent_option": {
+            "type": "boolean",
+            "description": "true if the posting allows equivalent experience instead."
+          }
+        }
+      }
+    },
+    "responsibilities": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    },
+    "deadline": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "apply_link": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^https://\\S+$"
+    },
+    "ai_directed_text": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "maxLength": 120
+      },
+      "description": "Short quotes (at most 15 words, cut with ... if longer) of any text addressed to AI tools. Empty if none."
+    },
+    "concerns": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "maxLength": 160
+      },
+      "description": "Conflicts or oddities in the posting, such as remote in the title and on site in the body."
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "review-result.json",
+  "title": "Review result",
+  "description": "What the review skill returns for one draft (decision 007). Blockers keep a draft off the morning list; notes never block.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "reviewer", "result", "blockers", "notes", "code_checks"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "lead_id": {"type": ["string", "null"]},
+    "round": {"type": "integer", "minimum": 0, "description": "0 for the first review, 1 after the first fix round, and so on."},
+    "reviewer": {"enum": ["independent", "same_context"], "description": "independent only if the reviewer ran in a separate context that saw only the draft, the posting, facts.md and voice.md."},
+    "result": {"enum": ["Pass", "Blocked"], "description": "Pass needs no blockers, code_checks.ran and code_checks.passed true, and reviewer independent."},
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check", "document", "detail"],
+        "properties": {
+          "check": {"enum": ["claim_not_traced", "unconfirmed_fact", "do_not_claim", "wording_rule", "overstated", "wrong_category", "wrong_target", "contact_details", "banned_phrase", "spelling", "pdf_parse", "posting_missing", "posting_closed", "never_in_draft", "other"]},
+          "document": {"enum": ["resume", "cover_letter", "answers", "posting", "all"]},
+          "quote": {"type": ["string", "null"], "maxLength": 200, "description": "The exact words in the draft."},
+          "detail": {"type": "string", "maxLength": 300},
+          "fix": {"type": ["string", "null"], "maxLength": 300, "description": "What would clear it, using only confirmed facts. Null if only the user can clear it."}
+        }
+      }
+    },
+    "notes": {"type": "array", "maxItems": 8, "items": {"type": "string", "maxLength": 240}, "description": "Skeptical recruiter read. Never blocks."},
+    "code_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ran", "passed"],
+      "properties": {
+        "ran": {"type": "boolean"},
+        "passed": {"type": "boolean"},
+        "summary": {"type": ["string", "null"], "maxLength": 300}
+      }
+    }
+  }
+}
