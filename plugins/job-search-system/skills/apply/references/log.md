@@ -8,10 +8,11 @@ the case without being asked again.
 The user says they submitted (for example "applied to <title> at
 <employer>").
 
-1. **Find the lead** by Lead ID, link or dedupe key, and check for the same
-   job on more than one row (different sources). A different role at the
-   same employer is a different lead; leave it alone. If there is no row,
-   create one (Source `pasted`) with what the user gives you.
+1. **Find the lead** by Lead ID, link, or employer and title
+   (`shared/tracker.md`), and check for the same job on more than one row. A
+   different role at the same employer is a different lead; leave it alone.
+   If there is no row, create one with what the user gives you (Status
+   `Applied`).
 2. **Folder.** If the lead has a Draft folder, use it. If not, create one in
    the output folder (`output.folder_name`) and save what exists: the
    posting (`posting.md`, if captured), and any resume, cover letter or
@@ -37,32 +38,34 @@ The user says they submitted (for example "applied to <title> at
    Show each proposal as the exact line to add or change. Write only what
    the user approves (`shared/profile.md`). Keep this to a few proposals;
    skip trivial edits.
-7. **Next step.** Name the next best lead: Ready rows first, then Needs you,
-   by Score, and any deadline within a week.
+7. **Next step.** Name what is waiting: Ready rows first, soonest Deadline
+   first, then Drafting rows with a blocker, and any Follow-up date due this
+   week on a Parked row.
 
 ## Skipped
 
-The user passes on a lead. Status `Skipped`, Status date today, and Skip
+The user passes on a job. Status `Skipped`, Status date today, and Skip
 reason in the user's words (short). Clear Next action. Update every
 matching row.
 
 ## Parked
 
-The user wants to come back later. There is no Parked status. Leave Status
-as it is, set Follow-up date if the user gives one, and add a short line to
-Notes (the user asked, so writing Notes is fine).
+The user wants to come back later. Status `Parked`, Status date today. Set
+Follow-up date if the user gives one. Set Next action as `shared/tracker.md`
+says. Add a short line to Notes only if the user gives a reason.
 
 ## Closed
 
-The posting is gone or no longer accepting applications. Status `Closed`.
-If an Applications row exists, leave it; the posting closing after the user
-applied says nothing about the outcome.
+The posting is gone or no longer accepting applications. Status `Closed`,
+Next action cleared. If an Applications row exists, leave it; the posting
+closing after the user applied says nothing about the outcome.
 
 ## Outcome updates
 
 If the user reports a response (a screen, an interview, a rejection),
 update the Applications row: Stage reached, Outcome, First response date,
-Next step date. Do not change the Leads row.
+Next step date. A rejection is Outcome `Rejected` on the Applications row
+only. Do not change the Leads row.
 
 ## If something is not in the tracker
 

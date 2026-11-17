@@ -1,92 +1,68 @@
-# tracker-schema.yaml: the tracker's tabs, columns, statuses and scorecard.
+# tracker-schema-core.yaml: the Core tracker's tabs, columns and statuses.
 #
-# This file is the source of truth for the tracker layout (decision 004).
-# v1 builds one tracker from it: the template Google Sheet (build step 3).
-# The collector, the skills and the nightly task all read and write the
-# columns named here, so change this file first and the sheet second.
+# Source of truth for the tracker that the Core plugin builds from scratch
+# with the Drive and Sheets connectors (decisions 028 and 032). Change this
+# file first and the sheet second.
+#
+# Column and value names reuse templates/tracker-schema.yaml (the Pipeline
+# layout) wherever they exist, so a Core sheet can be extended later.
 #
 # Rules for the sheet built from this schema:
-# - Column order is fixed. Scripts write by header name, but keep the order
-#   anyway so rows stay readable and nothing shifts between runs.
+# - Column order is fixed. Skills find columns by header name anyway.
 # - Keep every tab a plain range. Do not convert a tab to a Google Sheets
-#   table: typed table columns reject script writes.
-# - Dates are YYYY-MM-DD. Times are 24-hour in the user's timezone.
+#   table: typed table columns reject writes.
+# - Dates are text in YYYY-MM-DD.
+#
+# Versioning (decision 032): core_schema_version in the hidden Config tab.
+# Allowed without a migration: appending columns at the right, adding a
+# status, adding a tab. Needs a migration: renaming or removing a column or
+# tab, or changing what a status means.
 
-schema_version: 1
+core_schema_version: 1
 
 statuses:
-  # Lead statuses, in the order a lead usually moves through them.
-  - name: New
-    meaning: Collected and passed the hard filters. Not yet screened, or screened below the shortlist score.
-    set_by: collector
-  - name: Shortlisted
-    meaning: Screen score at or above settings.screening.shortlist_min_screen_score. Waiting for stage two.
-    set_by: collector
-  - name: Needs posting
-    meaning: Shortlisted, but the full posting could not be found. The user pastes it (decision 010).
-    set_by: nightly task
+  # Leads statuses. A rejection is not a Leads status: it is recorded as
+  # Outcome = Rejected on the Applications tab.
   - name: Drafting
-    meaning: Full posting found, scored at or above the bar, and a draft is in progress.
-    set_by: nightly task, apply skill
+    meaning: Posting captured, resume and cover letter in progress, or a draft that still has blockers.
+    set_by: apply skill (draft mode)
   - name: Ready
-    meaning: Draft passed every blocking check. Review notes are in the row.
-    set_by: nightly task, apply skill
-  - name: Needs you
-    meaning: Draft still has a blocker after the fix round, or the full-posting recommendation is Consider (close to the bar, not drafted), or the lead needs a decision only the user can make.
-    set_by: nightly task, apply skill
+    meaning: Draft passed every blocking check. The user reads, edits and applies on their own.
+    set_by: apply skill (draft mode)
   - name: Applied
-    meaning: The user submitted. Copies the row to Applications.
-    set_by: user, apply skill (log mode)
+    meaning: The user says they submitted. Copies a row to Applications.
+    set_by: apply skill (log mode)
   - name: Skipped
-    meaning: Dropped by a hard filter, recommendation Skip, or passed on by the user. Skip reason says which.
-    set_by: collector, nightly task, user
+    meaning: The user passes, or the posting was not processed because it looked like an injection attempt. Skip reason says which.
+    set_by: apply skill (log and draft modes)
+  - name: Parked
+    meaning: The user wants to come back later. Follow-up date is optional.
+    set_by: apply skill (log mode)
   - name: Closed
-    meaning: The posting is no longer open.
-    set_by: nightly task, user
-
-recommendations:
-  # Written to the Recommendation column from the full-posting score
-  # (or the screen score if there is no full posting yet).
-  - name: Draft
-    rule: score >= settings.drafting.score_bar
-  - name: Consider
-    rule: score >= score_bar - 2 and score < score_bar
-  - name: Skip
-    rule: score < score_bar - 2, or any hard filter hit
+    meaning: The posting is gone or no longer accepting applications.
+    set_by: apply skill (log mode)
 
 tabs:
   - name: Leads
-    purpose: Every lead from any source, one row per job. The overnight collector, the scout skill and postings the user pastes all land here.
+    purpose: Every job the user has asked Claude to draft for, one row per job.
     columns:
-      - {name: Lead ID, type: text, set_by: system, note: "Stable ID, for example L-20261110-007. Links Leads to Applications and folders."}
-      - {name: Date found, type: date, set_by: system}
-      - {name: Source, type: text, set_by: system, note: "gmail:<sender domain>, adzuna, usajobs, remoteok, weworkremotely, himalayas, watchlist:<employer>, scout, pasted"}
-      - {name: Source ref, type: text, set_by: system, note: "How to fetch the full posting later: <system>:<board or country>:<id>, for example greenhouse:larkspurregional:4821 or linkedin:4487975009. Blank for pasted leads."}
+      - {name: Lead ID, type: text, set_by: system, note: "L-YYYYMMDD-NNN. Links Leads to Applications and folders."}
+      - {name: Date found, type: date, set_by: system, note: "The day the row was created."}
       - {name: Title, type: text, set_by: system}
       - {name: Employer, type: text, set_by: system}
       - {name: Location, type: text, set_by: system}
       - {name: Work mode, type: enum, values: [remote, hybrid, onsite, unknown], set_by: system}
       - {name: Pay, type: text, set_by: system, note: "As listed. Blank if not listed."}
-      - {name: Pay yearly, type: number, set_by: system, note: "Top of listed range as a yearly figure. Hourly x 2080. Blank if unknown."}
-      - {name: Posted, type: date, set_by: system}
-      - {name: Link, type: url, set_by: system, note: "Must come from the source itself (decision 009)."}
-      - {name: Apply link, type: url, set_by: system, note: "Employer's own careers page when found (decision 010)."}
-      - {name: Screen score, type: number, range: [0, 12], set_by: collector, note: "Scorecard on the snippet."}
-      - {name: Score, type: number, range: [0, 12], set_by: nightly task, note: "Scorecard on the full posting."}
-      - {name: Score detail, type: text, set_by: system, note: "Per-dimension scores, for example W2 E1 L2 P1 D2 O1. A ? after a number means unknown."}
-      - {name: Recommendation, type: enum, values: [Draft, Consider, Skip], set_by: system}
-      - {name: Why, type: text, set_by: system, note: "One or two sentences on the score."}
-      - {name: Flags, type: text, set_by: system, note: "Semicolon-separated. Includes commute, on-call, pay math, level, drains, unconfirmed facts needed, and any text that addresses an AI (decision 009)."}
-      - {name: Status, type: enum, values_from: statuses, set_by: system and user}
+      - {name: Link, type: url, set_by: system, note: "The posting the user supplied."}
+      - {name: Flags, type: text, set_by: system, note: "Semicolon-separated. Includes any text in the posting aimed at an AI (decision 009)."}
+      - {name: Status, type: enum, values_from: statuses, set_by: system and user, note: "Strict dropdown."}
       - {name: Status date, type: date, set_by: system, note: "When Status last changed."}
       - {name: Skip reason, type: text, set_by: system and user}
-      - {name: Draft folder, type: url, set_by: nightly task, note: "Dated Drive folder with posting.md, resume and cover letter."}
-      - {name: Review result, type: enum, values: [Pass, Blocked, Not reviewed], set_by: nightly task}
-      - {name: Review notes, type: text, set_by: nightly task, note: "Blockers left after the fix round, plus recruiter-read notes."}
-      - {name: Next action, type: text, set_by: nightly task and apply skill, note: "One plain line telling the user what to do next, from the table in shared/tracker.md. Blank when nothing is needed (Skipped, Closed, Applied)."}
-      - {name: Deadline, type: date, set_by: system and user, note: "Application deadline if the posting gives one."}
-      - {name: Follow-up date, type: date, set_by: user}
-      - {name: Dedupe key, type: text, set_by: collector, note: "Normalized employer + title + location. Used to drop repeats across sources."}
+      - {name: Draft folder, type: url, set_by: system, note: "Dated folder in Applications with posting.md, resume, cover letter and review.json."}
+      - {name: Review result, type: enum, values: [Pass, Blocked, Not reviewed], set_by: system}
+      - {name: Next action, type: text, set_by: system, note: "One plain line telling the user what to do, from the table in shared/tracker.md. Blank when nothing is needed."}
+      - {name: Deadline, type: date, set_by: system and user}
+      - {name: Follow-up date, type: date, set_by: user, note: "Used by Parked."}
       - {name: Notes, type: text, set_by: user}
 
   - name: Applications
@@ -100,7 +76,6 @@ tabs:
       - {name: Channel, type: enum, values: [Employer site, Job board, Referral, Recruiter, Email, Other], set_by: user}
       - {name: Referral or contact, type: text, set_by: user}
       - {name: Pay, type: text, set_by: system}
-      - {name: Score at apply, type: number, range: [0, 12], set_by: system}
       - {name: Folder, type: url, set_by: system}
       - {name: Resume, type: url, set_by: system, note: "The version the user submitted, if saved back to the folder."}
       - {name: Cover letter, type: url, set_by: system}
@@ -110,101 +85,19 @@ tabs:
       - {name: Next step date, type: date, set_by: user}
       - {name: Notes, type: text, set_by: user}
 
-  - name: Run Log
-    purpose: One row per night, covering both stages. Never reorder these columns.
-    columns:
-      - {name: Run date, type: date, set_by: system}
-      - {name: Collector started, type: time, set_by: collector}
-      - {name: Collector finished, type: time, set_by: collector}
-      - {name: Collected, type: number, set_by: collector, note: "All items from all sources before dedupe."}
-      - {name: After dedupe, type: number, set_by: collector}
-      - {name: After hard filters, type: number, set_by: collector}
-      - {name: Shortlisted, type: number, set_by: collector}
-      - {name: Per source, type: text, set_by: collector, note: "source=count pairs, semicolon-separated, for example gmail:linkedin.com=41; adzuna=120. A source that errors shows ERR."}
-      - {name: Screen cost USD, type: number, set_by: collector, note: "API spend for Haiku screening. 0 without a key."}
-      - {name: Nightly started, type: time, set_by: nightly task}
-      - {name: Nightly finished, type: time, set_by: nightly task}
-      - {name: Full text found, type: number, set_by: nightly task}
-      - {name: Needs posting, type: number, set_by: nightly task}
-      - {name: Drafted, type: number, set_by: nightly task}
-      - {name: Ready, type: number, set_by: nightly task}
-      - {name: Needs you, type: number, set_by: nightly task}
-      - {name: Errors, type: text, set_by: system, note: "Short messages. Full detail goes to the script log."}
-      - {name: Notes, type: text, set_by: user}
-
-# Bookkeeping tabs. The collector needs these; users do not edit them. They
-# are hidden in the template sheet. They are not working tabs in the sense of
-# decision 004: no lead data lives only here.
-bookkeeping_tabs:
-  - name: Seen
-    purpose: One row per item the collector has ever evaluated, kept or dropped, so repeats across sources and nights are recognised. Rows older than the retention period are pruned.
-    retention_days: 120
-    columns:
-      - {name: Dedupe key, type: text}
-      - {name: First seen, type: date}
-      - {name: Source, type: text}
-      - {name: Lead ID, type: text, note: "Blank when the item was dropped by a hard filter."}
-      - {name: Outcome, type: text, note: "kept, or filtered: <reason>"}
+# Hidden. Key and value in two columns. Users do not edit it.
+hidden_tabs:
   - name: Config
-    purpose: Where the script finds the user's profile folder. Key and value in two columns.
     columns:
       - {name: Key, type: text}
       - {name: Value, type: text}
     keys:
+      - core_schema_version
       - profile_folder_id
-      - schema_version
 
-# The 12-point scorecard (decision 011). Six dimensions, 0 to 2 each.
-# The anchors below are generic. Each user's wants.md ("How to score me")
-# says what they mean for that user, and that wording wins.
-# The same scale is used on the snippet (Screen score) and on the full
-# posting (Score), by the collector, the scout skill and the apply skill.
-scorecard:
-  max: 12
-  unknown_rule: >-
-    If the text does not give enough to score a dimension, score it 1 and
-    mark it unknown (a ? in Score detail). Snippets will often have unknowns;
-    the full-posting score should have few. Never score 2 on a guess.
-  dimensions:
-    - key: W
-      name: Wants match
-      question: Is this the kind of work the user said they want?
-      anchors:
-        2: Core work matches one of the user's top interests.
-        1: Partly matches, or matches a lower-priority interest.
-        0: Not work the user said they want.
-    - key: E
-      name: Evidence in facts.md
-      question: Do confirmed facts show the user can do the top requirements?
-      anchors:
-        2: Confirmed facts cover most of the top requirements directly.
-        1: Confirmed facts cover some, or cover them only by transfer from a nearby field.
-        0: Few or no confirmed facts support the top requirements. Unconfirmed facts do not count.
-    - key: L
-      name: Logistics
-      question: Do location, work mode, schedule, on-call and travel fit wants.md?
-      anchors:
-        2: Fits on every point.
-        1: One point is a stretch or unknown.
-        0: Breaks a logistics limit (commute, mode, schedule or on-call).
-    - key: P
-      name: Pay against floors
-      question: How does listed pay compare with the floors in wants.md?
-      anchors:
-        2: Top of range at or above the floor (hourly x 2080 for hourly roles).
-        1: Not listed, or slightly under the floor.
-        0: Clearly under the floor.
-    - key: D
-      name: Drains
-      question: How many of the user's listed drains does the role show?
-      anchors:
-        2: None of the user's drains.
-        1: One drain, or a hint of one.
-        0: Several drains, or one the user marked as a deal-breaker.
-    - key: O
-      name: Odds
-      question: How realistic is an interview, given level, hard requirements and competition?
-      anchors:
-        2: Level fits and the user meets every hard requirement (license, clearance, degree if strict).
-        1: One hard requirement is missing or the level is a stretch.
-        0: Missing more than one hard requirement, or the level is far off.
+# What onboarding builds (checked in a live test on 2026-11-17, except hiding a tab).
+formatting:
+  header_row: bold, light gray fill, frozen
+  status_column: "strict dropdown with the six statuses; colors: green Applied, yellow Ready or Parked, gray Skipped or Closed"
+  other_dropdowns: [Work mode, Review result, Channel, Stage reached, Outcome]
+  widths: wider for Title, Employer, Notes and Next action

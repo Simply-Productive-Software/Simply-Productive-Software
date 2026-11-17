@@ -1,10 +1,10 @@
 # checks/
 
 Python scripts that check drafts for what code can verify exactly (decision
-007). The review skill runs them; the apply and scout skills use the
-validator and the dedupe key. `tools/sync_shared.py` copies this folder
-(without `tests/`) into `skills/apply/`, `skills/review/` and
-`skills/scout/`, so the scripts must not import anything from outside this
+007). The review skill runs them; the apply skill uses the validator. The
+onboard skill reads this README for what the `skills` check allows.
+`tools/sync_shared.py` copies this folder (without `tests/`) into
+`plugins/core/skills/onboard/`, `apply/` and `review/`, so the scripts must not import anything from outside this
 folder except `../shared/schemas/`, which sits at the same relative path in
 the repo and in every skill copy.
 

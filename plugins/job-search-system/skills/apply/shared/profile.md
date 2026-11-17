@@ -1,7 +1,7 @@
 # The profile folder and the tracker
 
 Every skill works from two things the user owns: a profile folder in their
-Google Drive (decision 006) and a tracker Google Sheet (decision 004).
+Google Drive (decision 006) and a tracker Google Sheet (decisions 028 and 032).
 Neither is ever copied into this plugin or the repo.
 
 ## Finding them
@@ -17,10 +17,7 @@ tracker sheet. A user can have more than one system folder.
 2. Otherwise search Drive for a file titled exactly `profile.yaml` whose
    content has `schema_version:`. Its parent folder is the profile folder and
    the parent's parent is the system folder. If there is more than one,
-   list the system folder names (and where each sits) and ask which one. In
-   unattended mode use the system folder named in the task's prompt; if
-   none is named and there is more than one, stop and record the problem
-   (see `unattended.md`).
+   list the system folder names (and where each sits) and ask which one.
 3. Read `settings.yaml` in the profile folder. `locations.tracker_sheet_url`
    is the tracker, `locations.output_folder_url` is where application
    folders go and `locations.system_folder_url` is the system folder.
@@ -33,13 +30,13 @@ tracker sheet. A user can have more than one system folder.
 
 Check once per session that the tracker's hidden Config tab has
 `profile_folder_id` equal to the folder you found. If it differs, tell the
-user: the overnight collector is reading a different folder.
+user: the tracker was built for a different Profile folder.
 
 ## Reading
 
 Read files with the Drive connector. Profile files are plain text files
-(`text/plain`, `.md` or `.yaml` names), not Google Docs. The collector reads
-them as raw text, so they must stay plain text.
+(`text/plain`, `.md` or `.yaml` names), not Google Docs. They stay plain
+text so any tool can read them.
 
 What each file is for:
 
@@ -47,12 +44,12 @@ What each file is for:
 | --- | --- | --- |
 | `profile.yaml` | Contact details for drafts, situation fields, module switches | Ask for or infer age (decision 015) |
 | `facts.md` | The only source of claims in a draft. Use `[confirmed]` lines only | Use `[unconfirmed]` lines in a draft |
-| `wants.md` | Scoring, flags, hard filters | Override the user's own scoring words with the generic anchors |
+| `wants.md` | The angle of a letter: what pulls the user to this kind of work | Use it to refuse, rank or judge a job (decision 031) |
 | `voice.md` | Tone, spelling, length, banned phrases | Copy sample text into a draft |
 | `stories.md` | Picking evidence for a posting | Use a story whose fact IDs are not all confirmed |
 | `answers.md` | Application questions | Answer EEO, age or attestation questions |
-| `sources.yaml` | Where to search | Store API keys here |
-| `settings.yaml` | Caps, score bar, models, formats, file names | Treat a missing key as an error. Missing keys fall back to `shared/default-settings.yaml` (a copy of the template) |
+| `sources.yaml` | Nothing. Core does not read it | Edit it or store API keys in it |
+| `settings.yaml` | Models, output formats, file names, locations | Treat a missing key as an error. Missing keys fall back to `shared/default-settings.yaml` (a copy of the template) |
 
 Keep a working copy of what you read in a local folder,
 `jss-work/<YYYY-MM-DD>/`, so the check scripts can read it. Delete nothing
@@ -70,8 +67,8 @@ filling in).
 2. If the connector can only create files (the usual case), create the new
    version first with the same name, `contentMimeType: text/plain` and
    `disableConversionToGoogleType: true`, in the same folder. Then move the
-   old file to the trash. Creating first means the collector never finds
-   the file missing. Trashed files stay recoverable for about 30 days.
+   old file to the trash. Creating first means the file is never
+   missing. Trashed files stay recoverable for about 30 days.
 3. Read the new file back and confirm it parses (YAML loads; facts lines
    keep the `- [confirmed] F-001 | ... | ... | ...` shape).
 4. Tell the user what changed in one or two lines.

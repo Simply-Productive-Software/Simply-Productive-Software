@@ -1,2 +1,0 @@
-This folder is a copy made by tools/sync_shared.py.
-Do not edit it. Edit the source in the repo and run the tool.

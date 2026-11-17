@@ -1,6 +1,6 @@
 ---
 name: onboard
-description: Use when someone wants to set up the job search system, start onboarding, continue onboarding, or redo part of their setup (facts, sorting skills into categories, wants, voice, sources, settings, calibration). Creates their profile folder and tracker and tailors the system to them.
+description: Use when someone wants to set up the job search system, start onboarding, continue onboarding, or redo part of their setup (facts, sorting skills into categories, wants, voice, output settings). Creates their Drive folders and tracker sheet and builds their profile.
 ---
 
 # Onboard
@@ -8,9 +8,9 @@ description: Use when someone wants to set up the job search system, start onboa
 Sets the system up for one person. Everything personal ends up in their own
 Google Drive, inside one system folder they choose or create and name
 (decision 020): a profile folder made from `templates/profile/` (decision
-006), an applications folder and a tracker sheet, either copied from the
-published template or built by a one-time paste of the collector script
-when no template link exists (decisions 004 and 019). Nothing personal is written to this plugin or to the repo.
+006), an applications folder and a tracker sheet that onboarding builds from
+scratch with the Drive and Sheets connectors (decisions 028 and 032). Nothing
+personal is written to this plugin or to the repo.
 
 Onboarding takes about an hour in total and can stop after any step. Each
 step saves its work, and the next session picks up where the last one
@@ -20,15 +20,12 @@ stopped.
 
 | # | Step | Detail | Done when |
 | --- | --- | --- | --- |
-| 1 | Welcome and check tools | below | The user knows what will happen; Drive and Sheets are reachable (or test mode is chosen) |
-| 2 | Storage | `references/step2-storage.md` (they choose an existing system folder or create a new one and name it; the tracker comes from the template link or a one-time paste) | System folder holds `Profile`, `Applications` and the tracker; settings has all three URLs |
+| 1 | Welcome and check tools | below | The user knows what will happen; Drive and Sheets are reachable |
+| 2 | Storage | `references/step2-storage.md` (they choose an existing system folder or create a new one and name it; the tracker sheet is built here) | System folder holds `Profile`, `Applications` and the tracker; settings has all three links; the tracker's Config tab has the schema version and the profile folder ID |
 | 3 | Career facts | `references/step3-facts.md` | Every role and most results in `facts.md` are `[confirmed]`; every skill sits under a category heading and `skills_preset` is set; Do not claim has at least one line; the user says the story bank is big enough for now |
-| 4 | Wants and situation | `references/step4-wants.md` | `wants.md` sections, its Hard filters block, `profile.yaml` contact and situation, and the basics in `answers.md` are filled in |
+| 4 | Wants and situation | `references/step4-wants.md` | `profile.yaml` contact and situation, the basics in `answers.md`, and the Interests and Level sections of `wants.md` are filled in. The other `wants.md` sections are optional and can stay as the template |
 | 5 | Voice | `references/step5-voice.md` | `voice.md` has samples, traits, format and a banned list the user has edited |
-| 6 | Sources | `references/step6-sources.md` | `sources.yaml` has at least one enabled source; alert label set up if alerts are used |
-| 7 | Settings | `references/step7-settings.md` | `settings.yaml` matches the user's plan and times |
-| 8 | Calibrate | `references/step8-calibrate.md` | The user and the scorecard agree on most sample postings |
-| 9 | Schedule | `references/step9-schedule.md` | The collector's daily trigger is installed and the nightly task is set up |
+| 6 | Output | `references/step6-settings.md` | `settings.yaml` has the file formats the user wants |
 
 ## Where to start
 
@@ -52,22 +49,26 @@ wants"). Read the current file first and change only what they ask.
 
 Tell the user, in a few lines:
 
-- What the system does: finds leads overnight, scores them against what
-  they want, drafts a resume and cover letter for the best few, and has
-  them checked. They decide and submit. It never submits anything.
+- What the system does: builds their profile from their own career history,
+  then, when they give it a job they have chosen, drafts a tailored resume
+  and cover letter from facts they have confirmed, has the draft checked, and
+  saves it to their Drive. A tracker sheet keeps a row for each job and what
+  happened to it. They edit and submit. It never submits anything. It does
+  not decide which jobs they should apply for.
 - What onboarding needs: their resumes or career notes, about an hour
-  (in pieces is fine), a Google account, and later a few minutes in their
-  Gmail and the tracker sheet. Without a template link, that includes one
-  copy and paste of the collector script into the sheet, which Claude walks
-  them through.
+  (in pieces is fine), and a Google account with the Drive and Sheets
+  connectors turned on. Setup creates the folders and the tracker sheet for
+  them.
 - That nothing about them leaves their own Google Drive and this Claude
   account.
 
 Then check that the Google Drive and Google Sheets connectors work (a quick
-search in Drive). If they are not connected, suggest connecting them. If
-the user cannot or will not connect Google, offer local test mode
-(`shared/profile.md`): they can try the facts, wants and voice steps with
-files here, but nothing will run overnight.
+search in Drive). If either is not connected, say which one, ask the user to
+turn it on, and stop. Onboarding does not go on without them. When they come
+back, start again at step 1.
+
+Local test mode (`shared/profile.md`) is for tests and demos. Use it only
+when the user says to use a local profile.
 
 ## How to run the interview steps
 
@@ -80,7 +81,7 @@ files here, but nothing will run overnight.
   3. **All at once.** The whole list, numbered and grouped, they reply in
      one message.
 
-  Use their choice for the rest of onboarding, in steps 3, 4 and 8. If they
+  Use their choice for the rest of onboarding, in steps 3 and 4. If they
   say "faster", "slower" or "one at a time", switch. If they have no
   preference, use small batches. In every mode show the exact text, accept
   the same replies (yes, a correction, delete, skip, not sure) and offer
@@ -99,31 +100,24 @@ files here, but nothing will run overnight.
   could appear in a resume or letter, save the answer as a term fact in
   Other facts (`Name is <what it is>`, decision 025). Do this in any step.
 - Draft from what the user says and show the exact text before saving.
-  The user edits; their words win. One exception: the "How to score me"
-  lines in `wants.md` are saved without being shown line by line, because
-  they restate the user's earlier answers (step 4 explains). Show them
-  whenever the user asks.
+  The user edits; their words win.
 - Save after each step (`shared/profile.md`, Writing a profile file), and
   say in one line what was saved.
 - Never ask for age or date of birth (decision 015). If the user offers it,
   do not record it, and say the system does not use it.
-- Never ask for API keys in the chat. Keys go into the tracker's menu (Job
-  Search > Set API keys), which keeps them in the sheet's script
-  properties.
+- Never ask for passwords or API keys in the chat.
 - Do not put salary history, health, family or other personal details into
   any file unless the user asks for a specific line.
 
 ## Finishing
 
-When all nine steps are done, tell the user in a few lines:
+When all six steps are done, tell the user in a few lines:
 
-- What happens tonight (the collector runs at `schedule.collector_time`),
-  and what to look at in the morning: the Leads tab, and the Next action
-  column on every row that is not blank. It says what to do. Also today's
-  Run Log row, where Errors names a night the nightly task did not run.
-- How to use it day to day: paste a posting to get a fit read and a draft
-  (apply skill), ask to find jobs (scout skill), say "I applied to..." to
-  log it.
-- If the overnight drafting task is available in this version, how it was
-  set up; if not, that they run the apply skill on Shortlisted leads until
-  it is.
+- Where everything is: the system folder, with Profile, Applications and the
+  tracker sheet.
+- How to use it: paste a job posting or a link and ask for a resume and cover
+  letter (apply skill). Read and edit the drafts, apply on the employer's
+  site, then say "I applied to..." so it is logged. They can also say they
+  skipped, parked or found a job closed.
+- Ask them to check anything in the profile files they want changed, and that
+  they can ask to redo any step.
