@@ -12,7 +12,7 @@ The user's own Google Drive and Google Sheets connectors, turned on in Claude. O
 
 ## Use at your own risk
 
-Beta, provided as is, with no warranty. The drafts are written by AI and can be wrong or incomplete. The user must read and check everything before using it, is responsible for the facts they confirm and for what they send, and uses the plugin at their own risk. Nothing is guaranteed. The license says what the user may and may not do with the plugin (`LICENSE` at the repo root).
+Beta, provided as is, with no warranty. The drafts are written by AI and can be wrong or incomplete. The user must read and check everything before using it, is responsible for the facts they confirm and for what they send, and uses the plugin at their own risk. Nothing is guaranteed. The license says what the user may and may not do with the plugin (the `LICENSE` file in the plugin folder).
 
 ## Skills
 
