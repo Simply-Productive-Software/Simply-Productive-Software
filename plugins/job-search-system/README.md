@@ -6,6 +6,14 @@ Core does not judge fit and has no scoring (decision 031). It has no collector, 
 
 Everything personal lives in one system folder in the user's own Google Drive (decision 020). Nothing personal is written to this plugin or to the repo.
 
+## Requirements
+
+The user's own Google Drive and Google Sheets connectors, turned on in Claude. Onboarding checks for them and stops, naming the one that is missing.
+
+## Use at your own risk
+
+Beta, provided as is, with no warranty. The drafts are written by AI and can be wrong or incomplete. The user must read and check everything before using it, is responsible for the facts they confirm and for what they send, and uses the plugin at their own risk. Nothing is guaranteed. The license says what the user may and may not do with the plugin (`LICENSE` at the repo root).
+
 ## Skills
 
 See `skills/`. Each skill is self-contained (decision 018): its `shared/`, `checks/` and `templates/` folders are copies made by `tools/sync_shared.py`, so never edit them.

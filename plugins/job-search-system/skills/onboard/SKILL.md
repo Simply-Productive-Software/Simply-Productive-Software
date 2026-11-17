@@ -61,6 +61,17 @@ Tell the user, in a few lines:
   them.
 - That nothing about them leaves their own Google Drive and this Claude
   account.
+- The terms, in plain words. It is a beta, provided as is, with no
+  warranty. The drafts are written by AI and can be wrong or incomplete, so
+  they must read and check every resume, cover letter and answer before they
+  use it, and they are responsible for the facts they confirm and for what
+  they send. It does not guarantee interviews, offers or any result. They use
+  it at their own risk and accept all risks of using it. It is for their own
+  job search only, and the license says what they may and may not do with the
+  plugin.
+
+Ask the user to say they understand and accept this before you go on. If they
+do not, stop and create nothing.
 
 Then check that the Google Drive and Google Sheets connectors work (a quick
 search in Drive). If either is not connected, say which one, ask the user to

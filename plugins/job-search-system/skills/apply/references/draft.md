@@ -202,5 +202,5 @@ Update the Leads row (`shared/tracker.md`):
   confirm a fact, or decide to leave a requirement unaddressed).
 - The reviewer's notes, briefly.
 
-The user edits the drafts and submits. When they say they applied, run log
-mode.
+End with one line: "Check every claim before you send this." The user edits
+the drafts and submits. When they say they applied, run log mode.
