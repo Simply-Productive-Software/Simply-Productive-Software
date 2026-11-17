@@ -1,7 +1,7 @@
 {
   "name": "job-search-system",
   "displayName": "Job Search System",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Builds your career profile, drafts a tailored resume and cover letter for a job you choose, checks the draft against your confirmed facts, and logs your applications. Requires the Google Drive and Google Sheets connectors. You edit and submit; it never submits anything. AI output can be wrong, so check everything, and use it at your own risk.",
   "keywords": ["job search", "resume", "cover letter", "tracker"]
 }
