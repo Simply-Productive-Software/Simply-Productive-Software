@@ -12,7 +12,7 @@ A catalog of Claude plugins from Simply Productive Software. Each plugin is a se
 
 ## Add this marketplace
 
-**Claude on the web or desktop app:** open Customize, then Plugins, then Add, then Add marketplace, and enter `Simply-Productive-Software/simply-productive-software`.
+**Claude on the web or desktop app:** open the plugins page (the sidebar shows either Plugins or Customize; if it is Customize, choose the Plugins tab), then Add, then Add marketplace, and enter `Simply-Productive-Software/simply-productive-software`.
 
 **Claude Code:**
 
