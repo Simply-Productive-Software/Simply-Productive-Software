@@ -1,4 +1,4 @@
-# skills-marketplace
+# simply-productive-software
 
 A catalog of Claude plugins from Simply Productive Software. Each plugin is a set of skills you add to Claude. This repo is the catalog and the plugin files; nothing runs from here.
 
