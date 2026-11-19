@@ -25,6 +25,10 @@ A catalog of Claude plugins from Simply Productive Software. Each plugin is a se
 
 The job-search-system plugin works with your own Google Drive through connectors you authorize in Claude. It creates folders and files there for your profile, drafts and tracker. This repo holds no personal data. Skills in this marketplace are not reviewed by Anthropic when you add them from a repo, so read what you install.
 
+## Docs
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): every file and folder in this repo, what it does and why it is needed, and how a release gets here
+
 ## Contact
 
 simplyproductivesoftware.com
